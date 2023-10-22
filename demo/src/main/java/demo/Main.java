@@ -59,7 +59,7 @@ public class Main extends Application {
         
         // Create a scene
         Scene scene = new Scene(root, 720, 720); // The view containing UI elements
-        applyStylesheet("dark-mode.css", scene); // Initital style
+        applyStylesheet("styles.css", scene); 
         
         // Set the scene for the primary stage
         primaryStage.setScene(scene);
@@ -156,7 +156,7 @@ public class Main extends Application {
        
 
         Label suggestedWordsLabel = new Label("Suggested words:");
-        suggestedWordsLabel.setId("suggested-words-label");
+        suggestedWordsLabel.setId("label-suggested-words");
         suggestListView = new ListView<>();
         suggestListView.setId("suggested-word-list");
     
@@ -303,34 +303,38 @@ public class Main extends Application {
     HBox footerContainer = new HBox();
     footerContainer.getStyleClass().add("footer-container");
     Label progressLabel = new Label("Progress:");
+    progressLabel.setId("label-progress");
 
     // Create a ToggleGroup for the radio buttons
     ToggleGroup styleToggleGroup = new ToggleGroup();
 
     RadioButton lightModeButton = new RadioButton("Light Mode");
     lightModeButton.setToggleGroup(styleToggleGroup);
-    lightModeButton.setSelected(true); // Light mode is default
-
+    
     RadioButton darkModeButton = new RadioButton("Dark Mode");
     darkModeButton.setToggleGroup(styleToggleGroup);
+    darkModeButton.setSelected(true); // Dark mode is default for now
+    root.getStyleClass().add("dark-mode");
 
     // Listener to toggle between styles
     styleToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
         if (newValue == darkModeButton) {
             // Apply the dark mode stylesheet
-            applyStylesheet("dark-mode.css", primaryStage.getScene());
+            root.getStyleClass().remove("light-mode"); // Remove the light-mode class
+            root.getStyleClass().add("dark-mode");
         } else if (newValue == lightModeButton) {
             // Apply the light mode stylesheet
-            applyStylesheet("light-mode.css", primaryStage.getScene());
+            root.getStyleClass().remove("dark-mode"); // Remove the dark-mode class
+            root.getStyleClass().add("light-mode");
         }
     });
+    
 
-    HBox buttonGroup = new HBox();
-    buttonGroup.setSpacing(10);
-    buttonGroup.setPadding(new Insets(0, 0, 0, 485)); // Adjust padding as needed
+    HBox toggleGroupBox = new HBox();
+    toggleGroupBox.getStyleClass().add("toggle-group-box");
 
-    buttonGroup.getChildren().addAll(lightModeButton, darkModeButton);
-    footerContainer.getChildren().addAll(progressLabel, buttonGroup);
+    toggleGroupBox.getChildren().addAll(lightModeButton, darkModeButton);
+    footerContainer.getChildren().addAll(progressLabel, toggleGroupBox);
 
     root.getChildren().add(footerContainer);
 }
