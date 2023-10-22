@@ -1,0 +1,189 @@
+.root {
+
+}
+
+.radio-button {
+    -fx-text-fill: white; /* Set text color to white */
+}
+
+.light-mode .text-area {
+    -fx-control-inner-background: #F5F5F5;
+    -fx-font-size: 14;
+}
+
+.light-mode .button {
+    -fx-background-color: #1E90FF;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-min-width: 100px;
+}
+
+.light-mode .button:hover {
+    -fx-background-color: #1873CD;
+}
+
+.light-mode .button:disabled {
+    -fx-background-color: #797979;
+    /* -fx-text-fill: #FF0000; */
+}
+
+.light-mode .input-container {
+    -fx-padding: 50 20 10 20; /* top, right, bottom, left */
+    -fx-spacing: 10px; 
+}
+
+.light-mode .input-container > * {
+    -fx-spacing: 10px; 
+}
+
+.light-mode .spellchecker-container {
+    -fx-padding: 10 0 0 25; /* top, right, bottom, left */
+}
+
+.light-mode #suggested-word-list {
+    -fx-control-inner-background: white;
+    -fx-pref-width: 250px;
+    -fx-pref-height: 250px;
+}
+
+.light-mode #suggested-words-label {
+    -fx-padding: 0 0 10 0;
+}
+
+.light-mode .correction-container {
+    -fx-padding: 30 0 0 50;
+}
+
+.light-mode #label-correction-options {
+    -fx-padding: 0 0 10 0;
+}
+
+.light-mode .correction-button-group {
+    -fx-spacing: 25px;
+}
+
+.light-mode #label-file-contents {
+    
+}
+
+.light-mode .file-contents-container {
+    -fx-padding: 35 20 0 20; /* top, right, bottom, left */
+    -fx-spacing: 10px; 
+}
+
+.light-mode .file-contents-container > * {
+    -fx-spacing: 10px; 
+}
+
+.light-mode .edit-button-container {
+    -fx-padding: 15 0 0 0; /* top, right, bottom, left */
+}
+
+.light-mode .edit-button-container > * {
+    -fx-spacing: 15px; 
+}
+
+.light-mode #label-manual-correction-buttons {
+    -fx-padding: 2.5 0 0 0;
+}
+
+.light-mode .footer-container {
+    -fx-padding: 80 0 10 10; /* top, right, bottom, left */
+    -fx-pref-width: 720px;
+}
+
+
+.root, .dark-mode {
+    -fx-background-color: #2e2e2e;
+}
+
+.dark-mode .text-area {
+    -fx-control-inner-background: #1E1E1E;
+    -fx-font-size: 14;
+}
+
+.dark-mode .button {
+    -fx-background-color: #1E90FF;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-min-width: 100px;
+}
+
+.dark-mode .button:hover {
+    -fx-background-color: #1873CD;
+}
+
+.dark-mode .button:disabled {
+    -fx-background-color: #555555;
+}
+
+.dark-mode .input-container {
+    -fx-padding: 50 20 10 20; /* top, right, bottom, left */
+    -fx-spacing: 10px; 
+}
+
+.dark-mode .input-container > *{
+    -fx-spacing: 10px;
+}
+
+.dark-mode .spellchecker-container {
+    -fx-padding: 10 0 0 25; /* top, right, bottom, left */
+}
+
+.dark-mode #suggested-word-list {
+    -fx-control-inner-background: #1E1E1E;
+    -fx-pref-width: 250px;
+    -fx-pref-height: 250px;
+}
+
+.dark-mode #suggested-words-label {
+    -fx-padding: 0 0 10 0;
+}
+
+.dark-mode .correction-container {
+    -fx-padding: 30 0 0 50;
+}
+
+.dark-mode #label-correction-options {
+    -fx-padding: 0 0 10 0;
+}
+
+.dark-mode .correction-button-group {
+    -fx-spacing: 25px;
+}
+
+.dark-mode #label-file-contents {
+
+}
+
+.dark-mode .file-contents-container {
+    -fx-padding: 35 20 0 20; /* top, right, bottom, left */
+    -fx-spacing: 10px; 
+}
+
+/* For all children */
+.dark-mode .file-contents-container > * {
+    -fx-spacing: 10px; 
+}
+
+.dark-mode .edit-button-container {
+    -fx-padding: 15 0 0 0; /* top, right, bottom, left */
+}
+
+.dark-mode .edit-button-container > * {
+    -fx-spacing: 15px; 
+}
+
+.dark-mode #label-manual-correction-buttons {
+    -fx-padding: 2.5 0 0 0;
+}
+
+.dark-mode .footer-container {
+    -fx-padding: 80 0 10 10; /* top, right, bottom, left */
+    -fx-pref-width: 720px; 
+}
+
+/* These CSS properties only exist for dark-mode.css */
+.dark-mode Label, .dark-mode .footer-container .dark-mode RadioButton {
+    -fx-text-fill: white; 
+}

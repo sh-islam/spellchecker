@@ -1,0 +1,87 @@
+.root {
+    -fx-background-color: #2e2e2e;
+}
+
+.text-area {
+    -fx-control-inner-background: #1E1E1E;
+    -fx-font-size: 14;
+}
+
+.button {
+    -fx-background-color: #1E90FF;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-min-width: 100px;
+}
+
+.button:hover {
+    -fx-background-color: #1873CD;
+}
+
+.button:disabled {
+    -fx-background-color: #555555;
+}
+
+.input-container {
+    -fx-padding: 50 20 10 20; /* top, right, bottom, left */
+    -fx-spacing: 10px; 
+}
+.input-container > *{
+    -fx-spacing: 10px;
+}
+
+
+.spellchecker-container {
+    -fx-padding: 10 0 0 25; /* top, right, bottom, left */
+}
+#suggested-word-list {
+    -fx-control-inner-background: #1E1E1E;
+    -fx-pref-width: 250px;
+    -fx-pref-height: 250px;
+}
+#suggested-words-label{
+    -fx-padding: 0 0 10 0;
+}
+.correction-container{
+    -fx-padding: 30 0 0 50;
+}
+#label-correction-options{
+    -fx-padding: 0 0 10 0;
+}
+.correction-button-group{
+    -fx-spacing: 25px;
+}
+
+#label-file-contents {
+
+}
+.file-contents-container {
+    -fx-padding: 35 20 0 20; /* top, right, bottom, left */
+    -fx-spacing: 10px; 
+}
+/* For all children */
+.file-contents-container > * {
+    -fx-spacing: 10px; 
+}
+
+.edit-button-container {
+    -fx-padding: 15 0 0 0; /* top, right, bottom, left */
+}
+.edit-button-container > * {
+    -fx-spacing: 15px; 
+}
+#label-manual-correction-buttons{
+    -fx-padding: 2.5 0 0 0;
+}
+
+.footer-container {
+    -fx-padding: 80 0 10 10; /* top, right, bottom, left */
+    -fx-pref-width: 720px; 
+}
+
+
+
+/* These CSS properties only exist for dark-mode.css */
+Label, .footer-container RadioButton {
+    -fx-text-fill: white; 
+}
