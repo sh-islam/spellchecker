@@ -10,73 +10,80 @@
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-min-width: 100px;
+    -fx-effect: dropshadow(three-pass-box, #00000075, 1, 0, 3, 3);
 }
 
 .button:hover {
     -fx-background-color: #1873CD;
+    -fx-effect: dropshadow(three-pass-box, #00000075, 5, 0.5, 3, 3);
+    -fx-scale-x: 1.05; 
+    -fx-scale-y: 1.05;
 }
 
 .button:disabled {
     -fx-background-color: #797979;
 }
 
+.Label {
+    -fx-effect: dropshadow(three-pass-box, #00000075, 5, 0.125, 3, 3);
+    -fx-text-fill: #0046af;
+}
+/* File browser and buttons */
 .input-container {
-    -fx-padding: 10 20 10 20; /* top, right, bottom, left */
+    -fx-padding: 30 20 10 20; /* top, right, bottom, left */
     -fx-spacing: 10px;
 }
-
+/* For children of? Sometimes works.. */
 .input-container > * {
     -fx-spacing: 10px;
 }
 
+/* Suggestions box and correction optons */
 .spellchecker-container {
-    -fx-padding: 20 0 0 25; /* top, right, bottom, left */
+    -fx-padding: 20 0 0 50; /* top, right, bottom, left */
 }
-
 #suggested-word-list {
     -fx-pref-width: 250px;
     -fx-pref-height: 150px;
 }
-
 #label-suggested-words {
     -fx-padding: 0 0 10 0;
 }
-
 .correction-container {
     -fx-padding: 75 0 0 40; /* top, right, bottom, left */
 }
-
 #label-correction-options {
     -fx-padding: 0 0 10 0;
 }
-
 .correction-button-group {
     -fx-spacing: 10px;
 }
+.delete-button-group{
+    -fx-padding: 20 0 0 0;
+}
 
+/* File contents and manual correction buttons*/
 #label-file-contents {
     -fx-padding: 10 0 0 0;
 }
-
 .file-contents-container {
-    -fx-padding: 50 20 10 20; /* top, right, bottom, left */
+    -fx-padding: 35 20 10 20; /* top, right, bottom, left */
     -fx-spacing: 10px;
 }
-
 .file-contents-container > * {
     -fx-spacing: 10px;
 }
-
 .edit-button-container {
-    -fx-padding: 0 0 10 0; /* top, right, bottom, left */
+    -fx-padding: 10 0 10 0; /* top, right, bottom, left */
     -fx-spacing: 15px;
 }
 #label-manual-correction-buttons {
     -fx-padding: 2.5 0 0 0;
 }
 
+/* Footer items */
 .footer-container {
-    -fx-padding: 20 20 0 20; /* top, right, bottom, left */
+    -fx-padding: 10 10 10 20 /* top, right, bottom, left */
 }
 .toggle-group-box {
     -fx-padding: 0 0 0 420;
@@ -84,26 +91,27 @@
 }
 
 
-
 /* Styles specific to light mode */
 .light-mode {
     -fx-background-color: #cecece; /* Light gray background */
-    -fx-control-inner-background: #F5F5F5;
-    -fx-text-fill: black;
+    -fx-control-inner-background: #F5F5F5; /* Changes color of text inside too */
 }
 
-.light-mode .label, .light-mode .footer-container .radio-button {
-    -fx-text-fill: black;
+.light-mode .footer-container {
+    -fx-background-color: #a8a8a870; /* Set your desired color for dark mode */
 }
 
 
 /* Styles specific to dark mode */
 .dark-mode {
     -fx-background-color: #2e2e2e;
-    -fx-control-inner-background: #1E1E1E;
+    -fx-control-inner-background: #1E1E1E;   
+}
+
+.dark-mode Label, .dark-mode RadioButton {
     -fx-text-fill: white;
 }
 
-.dark-mode .label, .dark-mode .footer-container .radio-button {
-    -fx-text-fill: white;
+.dark-mode .footer-container {
+    -fx-background-color: #1a1a1a52;
 }
