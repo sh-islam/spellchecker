@@ -13,6 +13,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;  
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
@@ -33,12 +34,12 @@ public class Main extends Application {
     
     private HBox spellCheckerContainer; // For spell checker items (suggestions, correction options)
     private String selectedSuggWord = "";
-    private Button replaceButton, replaceAllButton, ignoreButton, ignoreAllButton;
+    private Button replaceButton, replaceAllButton, ignoreButton, ignoreAllButton, deleteTextButton;
     ListView<String> suggestListView;
 
     private TextArea fileTextField;     // For displaying file text and manually editing
     private String fileContents;    // Contains contents of document and displays in fileTextField text area
-    private Button editTextFieldButton, saveTextFieldButton, undoTextEditButton, deleteTextButton;
+    private Button editTextFieldButton, saveTextFieldButton, undoTextEditButton;
 
 
     public static void main(String[] args) {
@@ -67,6 +68,10 @@ public class Main extends Application {
         // Set the title of the window
         primaryStage.setTitle("Spell-Checker App");
         
+        // Set the application icon
+        Image icon = new Image(getClass().getResourceAsStream("/program_icon.png"));
+        primaryStage.getIcons().add(icon);
+
         // Show the window
         primaryStage.show();
     }
@@ -202,7 +207,13 @@ public class Main extends Application {
         ignoreAllButton.setOnAction(e -> handleIgnoreAll());
         ignoreButtonGroup.getChildren().addAll(ignoreButton, ignoreAllButton);
 
-        correctionButtonsGroup.getChildren().addAll(replaceButtonsGroup, ignoreButtonGroup);
+        VBox deleteButtonGroup = new VBox();
+        deleteButtonGroup.getStyleClass().add("delete-button-group");
+        deleteTextButton = new Button("Delete");
+        deleteTextButton.setOnAction(e -> deleteError());
+        deleteButtonGroup.getChildren().add(deleteTextButton);
+
+        correctionButtonsGroup.getChildren().addAll(replaceButtonsGroup, ignoreButtonGroup, deleteButtonGroup);
         correctionContainer.getChildren().addAll(correctionLabel, correctionButtonsGroup);
 
         spellCheckerContainer.getChildren().addAll(suggestedWordsContainer, correctionContainer);
@@ -228,8 +239,6 @@ public class Main extends Application {
         Label buttonGroupLabel = new Label ("Manual correction options:");
         buttonGroupLabel.setId("label-manual-correction-buttons");
     
-        deleteTextButton = new Button("Delete");
-        deleteTextButton.setOnAction(e -> deleteError());
     
         undoTextEditButton = new Button("Undo and Cancel");
         undoTextEditButton.setDisable(true);
@@ -242,7 +251,7 @@ public class Main extends Application {
         saveTextFieldButton.setDisable(true);
         saveTextFieldButton.setOnAction(e -> saveEditChanges());
     
-        buttonGroup.getChildren().addAll(buttonGroupLabel, deleteTextButton, editTextFieldButton, saveTextFieldButton, undoTextEditButton);
+        buttonGroup.getChildren().addAll(buttonGroupLabel, editTextFieldButton, saveTextFieldButton, undoTextEditButton);
     
         // Add the label and children to the fileContentsContainer
         fileContentsContainer.getChildren().addAll(titleLabel, fileTextField, buttonGroup);
