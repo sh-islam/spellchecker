@@ -40,7 +40,7 @@ public class Main extends Application {
     
     private HBox spellCheckerContainer; // For spell checker items (suggestions, correction options)
     private String selectedSuggWord = "";
-    private Button replaceButton, replaceAllButton, ignoreButton, ignoreAllButton, deleteTextButton;
+    private Button replaceButton, replaceAllButton, ignoreButton, ignoreAllButton, addToDictButton, deleteTextButton;
     ListView<String> suggestListView;
 
     private TextArea fileTextField;     // For displaying file text and manually editing
@@ -63,7 +63,7 @@ public class Main extends Application {
         createInputContainer(); // Sets up the file input section
         createSpellCheckerContainer();; // Sets up the spell checker: suggestions and spellchecking options 
         createfileContentsContainer(); // Sets up the area to display file contents
-        createFooterContainer();
+        createFooterContainer();    // Sets up footer area including progress, radio-buttons, in future spelling stats
         
         // Create a scene
         Scene scene = new Scene(root, 720, 720); // The view containing UI elements
@@ -94,7 +94,9 @@ public class Main extends Application {
             }
         }
     }
+
     
+    // Menubar
     private void createMenuBar() {
         // Create a menu bar
         MenuBar menuBar = new MenuBar();
@@ -145,34 +147,28 @@ public class Main extends Application {
         root.getChildren().add(menuBar);
     }
     
-    private void adjustTextSize(double pixelChange) {
-        initFontSize += pixelChange;
-        String fontSizeStyle = "-fx-font-size: " + initFontSize + "px;";
-        root.setStyle(fontSizeStyle);
-    }
-
     private void openFile(Stage primaryStage) {
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Open File");
-    File selectedFile = fileChooser.showOpenDialog(primaryStage);
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open File");
+        File selectedFile = fileChooser.showOpenDialog(primaryStage);
 
-    if (selectedFile != null) {
-        String filePath = selectedFile.getAbsolutePath();
+        if (selectedFile != null) {
+            String filePath = selectedFile.getAbsolutePath();
 
-        if (filePath.toLowerCase().endsWith(".txt")) {
-            // Handle the file open operation, e.g., read the file content and update your UI
-            // Replace this with your actual file open logic
-            filePathField.setText(filePath);
-        } else {
-            // Show an error message for an invalid file type
-            Alert alert = new Alert(AlertType.WARNING);
-            alert.setTitle("Invalid File Type");
-            alert.setHeaderText("Please enter a valid plain-text file.");
-            alert.showAndWait();
-            filePathField.clear();
+            if (filePath.toLowerCase().endsWith(".txt")) {
+                // Handle the file open operation, e.g., read the file content and update your UI
+                // Replace this with your actual file open logic
+                filePathField.setText(filePath);
+            } else {
+                // Show an error message for an invalid file type
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Invalid File Type");
+                alert.setHeaderText("Please enter a valid plain-text file.");
+                alert.showAndWait();
+                filePathField.clear();
+            }
         }
     }
-}
 
     private void exitApplication() {
         // Will include save file
@@ -186,7 +182,14 @@ public class Main extends Application {
         });
     }
 
+    private void adjustTextSize(double pixelChange) {
+        initFontSize += pixelChange;
+        String fontSizeStyle = "-fx-font-size: " + initFontSize + "px;";
+        root.setStyle(fontSizeStyle);
+    }
 
+
+    // Input container items include field text box and buttons
     private void createInputContainer() {
         // Create a VBox to hold the input group and text field
         Label titleLabel = new Label("File path:"); 
@@ -204,7 +207,7 @@ public class Main extends Application {
 
         // Create a button to browse for a file
         browseButton = new Button("Browse");
-        browseButton.setOnAction(e -> browseFile(primaryStage));
+        browseButton.setOnAction(e -> handleBrowseFile(primaryStage));
 
         // Create a button to start spell-check
         startSpellCheckButton = new Button("Start Spell Check");
@@ -220,33 +223,6 @@ public class Main extends Application {
         // Add the main VBox to the root
         root.getChildren().addAll(inputContainer);
     }
-
-    private void browseFile(Stage primaryStage) {
-        // FileChooser fileChooser = new FileChooser();
-        // fileChooser.setTitle("Open File");
-        // java.io.File selectedFile = fileChooser.showOpenDialog(primaryStage);
-
-        // if (selectedFile != null) {
-        //     String filePath = selectedFile.getAbsolutePath();
-
-        //     if (filePath.toLowerCase().endsWith(".txt")) {
-        //         filePathField.setText(filePath);
-        //         // Allow spell check to start after txt file is browsed
-        //         startSpellCheckButton.setDisable(false);    
-        //     } else {
-        //         Alert alert = new Alert(AlertType.WARNING);
-        //         alert.setTitle("Invalid File Type");
-        //         alert.setHeaderText("Please enter a valid plain-text file.");
-        //         alert.showAndWait();
-        //         filePathField.clear();
-        //     }
-        // }
-
-        // Instead of doing that all the time, just replace the path of a file of your choosing:
-        startSpellCheckButton.setDisable(false);
-        filePathField.setText("C:\\Users\\ryati\\Desktop\\testing.txt");
-    }
-
 
     // Suggestion correction button options (replace, ignore) in here
     private void createSpellCheckerContainer(){
@@ -304,13 +280,16 @@ public class Main extends Application {
         ignoreAllButton.setOnAction(e -> handleIgnoreAll());
         ignoreButtonGroup.getChildren().addAll(ignoreButton, ignoreAllButton);
 
-        VBox deleteButtonGroup = new VBox();
-        deleteButtonGroup.getStyleClass().add("delete-button-group");
+        VBox addDeleteButtonGroup = new VBox();
+        addDeleteButtonGroup.getStyleClass().add("add-delete-button-group");
         deleteTextButton = new Button("Delete");
-        deleteTextButton.setOnAction(e -> deleteError());
-        deleteButtonGroup.getChildren().add(deleteTextButton);
+        deleteTextButton.setOnAction(e -> handleDeleteError());
+        addToDictButton = new Button("Add to Dictionary");
+        addToDictButton.setOnAction(e -> handleAddToDict());
+        addDeleteButtonGroup.getChildren().addAll(deleteTextButton, addToDictButton);
 
-        correctionButtonsGroup.getChildren().addAll(replaceButtonsGroup, ignoreButtonGroup, deleteButtonGroup);
+
+        correctionButtonsGroup.getChildren().addAll(replaceButtonsGroup, ignoreButtonGroup, addDeleteButtonGroup);
         correctionContainer.getChildren().addAll(correctionLabel, correctionButtonsGroup);
 
         spellCheckerContainer.getChildren().addAll(suggestedWordsContainer, correctionContainer);
@@ -339,14 +318,14 @@ public class Main extends Application {
     
         undoTextEditButton = new Button("Undo and Cancel");
         undoTextEditButton.setDisable(true);
-        undoTextEditButton.setOnAction(e -> undoAndCancelEdit());
+        undoTextEditButton.setOnAction(e -> handleUndoAndCancel());
     
         editTextFieldButton = new Button("Edit");
-        editTextFieldButton.setOnAction(e -> enableEditing());
+        editTextFieldButton.setOnAction(e -> handleEnableEditing());
     
         saveTextFieldButton = new Button("Save");
         saveTextFieldButton.setDisable(true);
-        saveTextFieldButton.setOnAction(e -> saveEditChanges());
+        saveTextFieldButton.setOnAction(e -> handleSaveEditChanges());
     
         buttonGroup.getChildren().addAll(buttonGroupLabel, editTextFieldButton, saveTextFieldButton, undoTextEditButton);
     
@@ -356,97 +335,78 @@ public class Main extends Application {
         root.getChildren().add(fileContentsContainer);
     }
     
-    private void enableEditing() {
-        fileTextField.setEditable(true);
-        editTextFieldButton.setDisable(true); 
-        deleteTextButton.setDisable(true);
-        saveTextFieldButton.setDisable(false);
-        undoTextEditButton.setDisable(false);
-
-        // Disable the spell-check options
-        replaceButton.setDisable(true);
-        replaceAllButton.setDisable(true);
-        ignoreButton.setDisable(true);
-        ignoreAllButton.setDisable(true);
-    }
-
-    private void saveEditChanges(){
-        fileContents =fileTextField.getText();  // Rewriting the previous content before editing, original text is lost but not overwritten yet
-
-        fileTextField.setEditable(false);
-        editTextFieldButton.setDisable(false); 
-        deleteTextButton.setDisable(false);
-        saveTextFieldButton.setDisable(true);
-        undoTextEditButton.setDisable(true);
-
-        // Enable the spell-check options
-        replaceButton.setDisable(false);
-        replaceAllButton.setDisable(false);
-        ignoreButton.setDisable(false);
-        ignoreAllButton.setDisable(false);
-
-
-        // Not saving to a file yet.
-    }
-
-    private void undoAndCancelEdit(){
-        fileTextField.setText(fileContents); // Reverting back to previous content before edit
-        undoTextEditButton.setDisable(true);
-        saveTextFieldButton.setDisable(true);
-        // Enable the spell-check options
-        replaceButton.setDisable(false);
-        replaceAllButton.setDisable(false);
-        ignoreButton.setDisable(false);
-        ignoreAllButton.setDisable(false);
-        // Enable delete and edit buttons
-        deleteTextButton.setDisable(false);
-        editTextFieldButton.setDisable(false);
-        fileTextField.setEditable(false); // Stop the file contents field from being editable
-    }
-   
-
+    // Footer items include progress and radio-buttons. Will add error stats here. 
     private void createFooterContainer() {
-    HBox footerContainer = new HBox();
-    footerContainer.getStyleClass().add("footer-container");
-    Label progressLabel = new Label("Progress:");
-    progressLabel.setId("label-progress");
+        HBox footerContainer = new HBox();
+        footerContainer.getStyleClass().add("footer-container");
+        Label progressLabel = new Label("Progress:");
+        progressLabel.setId("label-progress");
 
-    // Create a ToggleGroup for the radio buttons
-    ToggleGroup styleToggleGroup = new ToggleGroup();
+        // Create a ToggleGroup for the radio buttons
+        ToggleGroup styleToggleGroup = new ToggleGroup();
 
-    RadioButton lightModeButton = new RadioButton("Light Mode");
-    lightModeButton.setToggleGroup(styleToggleGroup);
-    
-    RadioButton darkModeButton = new RadioButton("Dark Mode");
-    darkModeButton.setToggleGroup(styleToggleGroup);
-    darkModeButton.setSelected(true); // Dark mode is default for now
-    root.getStyleClass().add("dark-mode");
+        RadioButton lightModeButton = new RadioButton("Light Mode");
+        lightModeButton.setToggleGroup(styleToggleGroup);
+        
+        RadioButton darkModeButton = new RadioButton("Dark Mode");
+        darkModeButton.setToggleGroup(styleToggleGroup);
+        darkModeButton.setSelected(true); // Dark mode is default for now
+        root.getStyleClass().add("dark-mode");
 
-    // Listener to toggle between styles
-    styleToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
-        if (newValue == darkModeButton) {
-            // Apply the dark mode stylesheet
-            root.getStyleClass().remove("light-mode"); // Remove the light-mode class
-            root.getStyleClass().add("dark-mode");
-        } else if (newValue == lightModeButton) {
-            // Apply the light mode stylesheet
-            root.getStyleClass().remove("dark-mode"); // Remove the dark-mode class
-            root.getStyleClass().add("light-mode");
-        }
-    });
-    
+        // Listener to toggle between styles
+        styleToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == darkModeButton) {
+                // Apply the dark mode stylesheet
+                root.getStyleClass().remove("light-mode"); // Remove the light-mode class
+                root.getStyleClass().add("dark-mode");
+            } else if (newValue == lightModeButton) {
+                // Apply the light mode stylesheet
+                root.getStyleClass().remove("dark-mode"); // Remove the dark-mode class
+                root.getStyleClass().add("light-mode");
+            }
+        });
+        
 
-    HBox toggleGroupBox = new HBox();
-    toggleGroupBox.getStyleClass().add("toggle-group-box");
+        HBox toggleGroupBox = new HBox();
+        toggleGroupBox.getStyleClass().add("toggle-group-box");
 
-    toggleGroupBox.getChildren().addAll(lightModeButton, darkModeButton);
-    footerContainer.getChildren().addAll(progressLabel, toggleGroupBox);
+        toggleGroupBox.getChildren().addAll(lightModeButton, darkModeButton);
+        footerContainer.getChildren().addAll(progressLabel, toggleGroupBox);
 
-    root.getChildren().add(footerContainer);
+        root.getChildren().add(footerContainer);
 }
 
 
-    // Main function to do the spell checking
+    // Event handler functions
+
+    // Opens a FileChooser and checks selected file is of valid type
+    private void handleBrowseFile(Stage primaryStage) {
+        // FileChooser fileChooser = new FileChooser();
+        // fileChooser.setTitle("Open File");
+        // java.io.File selectedFile = fileChooser.showOpenDialog(primaryStage);
+
+        // if (selectedFile != null) {
+        //     String filePath = selectedFile.getAbsolutePath();
+
+        //     if (filePath.toLowerCase().endsWith(".txt")) {
+        //         filePathField.setText(filePath);
+        //         // Allow spell check to start after txt file is browsed
+        //         startSpellCheckButton.setDisable(false);    
+        //     } else {
+        //         Alert alert = new Alert(AlertType.WARNING);
+        //         alert.setTitle("Invalid File Type");
+        //         alert.setHeaderText("Please enter a valid plain-text file.");
+        //         alert.showAndWait();
+        //         filePathField.clear();
+        //     }
+        // }
+
+        // Instead of doing that all the time, just replace the path of a file of your choosing:
+        startSpellCheckButton.setDisable(false);
+        filePathField.setText("C:\\Users\\ryati\\Desktop\\testing.txt");
+    }
+
+    // Starts program when start is pressed after a valid file is selected
     private void startSpellCheck() {
         // Disable fieldpath form, browse button, and start button
         // Show file contents and spelling options
@@ -458,13 +418,8 @@ public class Main extends Application {
         // Read file contents from file path and show in text field
         fileContents = Document.readTextFile(filePathField.getText());
         fileTextField.setText(fileContents);
-
-
-        // Call dictionary with current word to check if error, if error then highlight, increase error count, etc.
-        // if not error, move onto next word
     }
 
-    // Functions to handle replace and ignore buttton click event handlers
     private void handleReplace() {
         // Implement the action for the "Replace" button here
     }
@@ -481,7 +436,58 @@ public class Main extends Application {
         // Implement the action for the "Ignore All" button here
     }
 
-    private void deleteError() {
+    private void handleDeleteError() {
         // Implement the action for the "Delete" button here
+    }
+
+    private void handleAddToDict(){
+
+    }
+
+    private void handleEnableEditing() {
+        fileTextField.setEditable(true);
+        editTextFieldButton.setDisable(true); 
+        deleteTextButton.setDisable(true);
+        saveTextFieldButton.setDisable(false);
+        undoTextEditButton.setDisable(false);
+
+        // Disable the spell-check options
+        replaceButton.setDisable(true);
+        replaceAllButton.setDisable(true);
+        ignoreButton.setDisable(true);
+        ignoreAllButton.setDisable(true);
+    }
+
+    private void handleSaveEditChanges(){
+        fileContents =fileTextField.getText();  // Rewriting the previous content before editing, original text is lost but not overwritten yet
+
+        fileTextField.setEditable(false);
+        editTextFieldButton.setDisable(false); 
+        deleteTextButton.setDisable(false);
+        saveTextFieldButton.setDisable(true);
+        undoTextEditButton.setDisable(true);
+
+        // Enable the spell-check options
+        replaceButton.setDisable(false);
+        replaceAllButton.setDisable(false);
+        ignoreButton.setDisable(false);
+        ignoreAllButton.setDisable(false);
+
+        // Not saving to a file yet.
+    }
+
+    private void handleUndoAndCancel(){
+        fileTextField.setText(fileContents); // Reverting back to previous content before edit
+        undoTextEditButton.setDisable(true);
+        saveTextFieldButton.setDisable(true);
+        // Enable the spell-check options
+        replaceButton.setDisable(false);
+        replaceAllButton.setDisable(false);
+        ignoreButton.setDisable(false);
+        ignoreAllButton.setDisable(false);
+        // Enable delete and edit buttons
+        deleteTextButton.setDisable(false);
+        editTextFieldButton.setDisable(false);
+        fileTextField.setEditable(false); // Stop the file contents field from being editable
     }
 }
