@@ -71,6 +71,7 @@ public class Main extends Application {
             replaceButton, replaceAllButton, ignoreButton, ignoreAllButton, addToDictButton, deleteTextButton,
             editTextFieldButton, saveTextFieldButton, undoTextEditButton
         );
+        
         // Create a scene
         Scene scene = new Scene(root, 720, 720); // The view containing UI elements
         applyStylesheet("styles.css", scene); 
@@ -101,6 +102,7 @@ public class Main extends Application {
         }
     }
 
+    // Tooltips to display on hover over buttons
     private void setTooltipsForButtons(Button... buttons) {
         for (Button button : buttons) {
             Tooltip tooltip = new Tooltip(button.getText());
@@ -108,8 +110,6 @@ public class Main extends Application {
         }
     }
 
-
-    
     // Menubar
     private void createMenuBar() {
         // Create a menu bar
