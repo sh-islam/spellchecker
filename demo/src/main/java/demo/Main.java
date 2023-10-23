@@ -13,6 +13,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;  
 import javafx.scene.layout.HBox;
@@ -64,7 +65,12 @@ public class Main extends Application {
         createSpellCheckerContainer();; // Sets up the spell checker: suggestions and spellchecking options 
         createfileContentsContainer(); // Sets up the area to display file contents
         createFooterContainer();    // Sets up footer area including progress, radio-buttons, in future spelling stats
-        
+        // Setting tool-tips/hover-text for all buttons
+        setTooltipsForButtons(
+            startSpellCheckButton, browseButton, 
+            replaceButton, replaceAllButton, ignoreButton, ignoreAllButton, addToDictButton, deleteTextButton,
+            editTextFieldButton, saveTextFieldButton, undoTextEditButton
+        );
         // Create a scene
         Scene scene = new Scene(root, 720, 720); // The view containing UI elements
         applyStylesheet("styles.css", scene); 
@@ -94,6 +100,14 @@ public class Main extends Application {
             }
         }
     }
+
+    private void setTooltipsForButtons(Button... buttons) {
+        for (Button button : buttons) {
+            Tooltip tooltip = new Tooltip(button.getText());
+            button.setTooltip(tooltip);
+        }
+    }
+
 
     
     // Menubar
