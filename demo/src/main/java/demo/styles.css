@@ -1,8 +1,13 @@
 /* Common styles for both modes */
 .root {
-    -fx-font-size: 14;
+    /* Initial font-size--if changed, change value of initFontSize in above adjustTextSize() */
+    -fx-font-size: 14;  
     -fx-min-width: 100px;
     -fx-padding: 0;
+}
+
+.menubar{
+    -fx-text-fill: white;
 }
 
 .button {
@@ -24,14 +29,11 @@
     -fx-background-color: #797979;
 }
 
-.Label {
-    -fx-effect: dropshadow(three-pass-box, #00000075, 5, 0.125, 3, 3);
-    -fx-text-fill: #0046af;
-}
 /* File browser and buttons */
 .input-container {
     -fx-padding: 30 20 10 20; /* top, right, bottom, left */
     -fx-spacing: 10px;
+   
 }
 /* For children of? Sometimes works.. */
 .input-container > * {
@@ -56,6 +58,12 @@
     -fx-padding: 0 0 10 0;
 }
 .correction-button-group {
+    -fx-spacing: 10px;
+}
+.replace-button-group{
+    -fx-spacing: 10px;
+}
+.ignore-button-group{
     -fx-spacing: 10px;
 }
 .delete-button-group{
@@ -86,8 +94,11 @@
     -fx-padding: 10 10 10 20 /* top, right, bottom, left */
 }
 .toggle-group-box {
-    -fx-padding: 0 0 0 420;
+    -fx-padding: 0 0 0 480;
     -fx-spacing: 15px;
+}
+.footer-container Label, .footer-container RadioButton {
+    -fx-font-size: 11px;
 }
 
 
@@ -95,6 +106,12 @@
 .light-mode {
     -fx-background-color: #cecece; /* Light gray background */
     -fx-control-inner-background: #F5F5F5; /* Changes color of text inside too */
+}
+
+.light-mode Label, .light-mode RadioButton {
+    -fx-text-fill: #b85900;
+    -fx-font-weight: bold;
+    
 }
 
 .light-mode .footer-container {
@@ -109,7 +126,8 @@
 }
 
 .dark-mode Label, .dark-mode RadioButton {
-    -fx-text-fill: white;
+    -fx-text-fill: #FFFF99;
+    -fx-font-weight: bold;
 }
 
 .dark-mode .footer-container {

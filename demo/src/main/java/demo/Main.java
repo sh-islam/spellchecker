@@ -2,12 +2,12 @@ package demo;
 
 // JavaFX imports
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
@@ -18,8 +18,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.io.File;
 // Other imports
 import java.net.URL;
 
@@ -27,6 +32,7 @@ import java.net.URL;
 public class Main extends Application {
     private Stage primaryStage; // The primary window of the application
     private VBox root; // The root container for UI elements within the scene
+    private double initFontSize = 14.0;
 
     private Button startSpellCheckButton, browseButton;   // For input area items
     private VBox fileContentsContainer;
@@ -53,6 +59,7 @@ public class Main extends Application {
         root = new VBox(); // The main container that organizes UI elements vertically (Vbox) 
 
         // **Create display areas here**
+        createMenuBar();
         createInputContainer(); // Sets up the file input section
         createSpellCheckerContainer();; // Sets up the spell checker: suggestions and spellchecking options 
         createfileContentsContainer(); // Sets up the area to display file contents
@@ -88,6 +95,97 @@ public class Main extends Application {
         }
     }
     
+    private void createMenuBar() {
+        // Create a menu bar
+        MenuBar menuBar = new MenuBar();
+        menuBar.getStyleClass().add("menubar");
+    
+        // Create a "File" menu
+        Menu fileMenu = new Menu("File");
+        fileMenu.getStyleClass().add("file-menu");
+    
+        // Create "Open" and "Exit" menu items
+        MenuItem openMenuItem = new MenuItem("Open");
+        openMenuItem.getStyleClass().add("file-menu-open");
+        MenuItem exitMenuItem = new MenuItem("Exit");
+        exitMenuItem.getStyleClass().add("file-menu-exit");
+    
+        // Set actions for the "Open" and "Exit" menu items
+        openMenuItem.setOnAction(e -> openFile(primaryStage));
+        exitMenuItem.setOnAction(e -> exitApplication());
+    
+        // Add menu items to the "File" menu
+        fileMenu.getItems().addAll(openMenuItem, exitMenuItem);
+    
+        // Create a "View" menu
+        Menu viewMenu = new Menu("View");
+        viewMenu.getStyleClass().add("view-menu");
+    
+        // Create "Increase Text Size," "Decrease Text Size," and "Reset Text Size" menu items
+        MenuItem increaseTextSizeMenuItem = new MenuItem("Increase Text Size");
+        MenuItem decreaseTextSizeMenuItem = new MenuItem("Decrease Text Size");
+        MenuItem resetTextSizeMenuItem = new MenuItem("Reset Text Size");
+    
+        // Set actions for the "Increase Text Size," "Decrease Text Size," and "Reset Text Size" menu items
+        increaseTextSizeMenuItem.setOnAction(e -> adjustTextSize(2.0));
+        decreaseTextSizeMenuItem.setOnAction(e -> adjustTextSize(-2.0));
+        resetTextSizeMenuItem.setOnAction(e -> {
+            initFontSize = 14.0;
+            String fontSizeStyle = "-fx-font-size: " + initFontSize + "px;";
+            root.setStyle(fontSizeStyle);
+        });
+        
+    
+        // Add menu items to the "View" menu
+        viewMenu.getItems().addAll(increaseTextSizeMenuItem, decreaseTextSizeMenuItem, resetTextSizeMenuItem);
+    
+        // Add the "File" and "View" menus to the menu bar
+        menuBar.getMenus().addAll(fileMenu, viewMenu);
+    
+        root.getChildren().add(menuBar);
+    }
+    
+    private void adjustTextSize(double pixelChange) {
+        initFontSize += pixelChange;
+        String fontSizeStyle = "-fx-font-size: " + initFontSize + "px;";
+        root.setStyle(fontSizeStyle);
+    }
+
+    private void openFile(Stage primaryStage) {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Open File");
+    File selectedFile = fileChooser.showOpenDialog(primaryStage);
+
+    if (selectedFile != null) {
+        String filePath = selectedFile.getAbsolutePath();
+
+        if (filePath.toLowerCase().endsWith(".txt")) {
+            // Handle the file open operation, e.g., read the file content and update your UI
+            // Replace this with your actual file open logic
+            filePathField.setText(filePath);
+        } else {
+            // Show an error message for an invalid file type
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Invalid File Type");
+            alert.setHeaderText("Please enter a valid plain-text file.");
+            alert.showAndWait();
+            filePathField.clear();
+        }
+    }
+}
+
+    private void exitApplication() {
+        // Will include save file
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Exit");
+        alert.setHeaderText("Are you sure you want to exit?");
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                primaryStage.close();
+            }
+        });
+    }
+
 
     private void createInputContainer() {
         // Create a VBox to hold the input group and text field
@@ -135,7 +233,6 @@ public class Main extends Application {
         //         filePathField.setText(filePath);
         //         // Allow spell check to start after txt file is browsed
         //         startSpellCheckButton.setDisable(false);    
-        //         filePathField.setDisable(false);
         //     } else {
         //         Alert alert = new Alert(AlertType.WARNING);
         //         alert.setTitle("Invalid File Type");
@@ -192,7 +289,7 @@ public class Main extends Application {
         
         // "Replace" and "Ignore" button groups
         VBox replaceButtonsGroup = new VBox();
-        replaceButtonsGroup.setSpacing(10);
+        replaceButtonsGroup.getStyleClass().add("replace-button-group");
         replaceButton = new Button("Replace");
         replaceButton.setOnAction(e -> handleReplace());
         replaceAllButton = new Button("Replace All");
@@ -200,7 +297,7 @@ public class Main extends Application {
         replaceButtonsGroup.getChildren().addAll(replaceButton, replaceAllButton);
 
         VBox ignoreButtonGroup = new VBox();
-        ignoreButtonGroup.setSpacing(10);
+        ignoreButtonGroup.getStyleClass().add("ignore-button-group");
         ignoreButton = new Button("Ignore");
         ignoreButton.setOnAction(e -> handleIgnore());
         ignoreAllButton = new Button("Ignore All");
