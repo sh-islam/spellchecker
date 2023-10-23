@@ -445,49 +445,57 @@ public class Main extends Application {
     }
 
     private void handleEnableEditing() {
-        fileTextField.setEditable(true);
-        editTextFieldButton.setDisable(true); 
-        deleteTextButton.setDisable(true);
-        saveTextFieldButton.setDisable(false);
-        undoTextEditButton.setDisable(false);
-
         // Disable the spell-check options
         replaceButton.setDisable(true);
         replaceAllButton.setDisable(true);
         ignoreButton.setDisable(true);
         ignoreAllButton.setDisable(true);
+        addToDictButton.setDisable(true);
+
+        // File-text field and manual edit buttons
+        fileTextField.setEditable(true);
+        editTextFieldButton.setDisable(true); 
+        deleteTextButton.setDisable(true);
+        saveTextFieldButton.setDisable(false);
+        undoTextEditButton.setDisable(false);
     }
 
     private void handleSaveEditChanges(){
         fileContents =fileTextField.getText();  // Rewriting the previous content before editing, original text is lost but not overwritten yet
 
-        fileTextField.setEditable(false);
-        editTextFieldButton.setDisable(false); 
-        deleteTextButton.setDisable(false);
-        saveTextFieldButton.setDisable(true);
-        undoTextEditButton.setDisable(true);
-
         // Enable the spell-check options
         replaceButton.setDisable(false);
         replaceAllButton.setDisable(false);
         ignoreButton.setDisable(false);
+        deleteTextButton.setDisable(false);
         ignoreAllButton.setDisable(false);
+        addToDictButton.setDisable(false);
+
+        // File-text field and manual edit buttons
+        fileTextField.setEditable(false);
+        editTextFieldButton.setDisable(false); 
+        saveTextFieldButton.setDisable(true);
+        undoTextEditButton.setDisable(true);
 
         // Not saving to a file yet.
     }
 
     private void handleUndoAndCancel(){
         fileTextField.setText(fileContents); // Reverting back to previous content before edit
-        undoTextEditButton.setDisable(true);
-        saveTextFieldButton.setDisable(true);
+    
         // Enable the spell-check options
         replaceButton.setDisable(false);
         replaceAllButton.setDisable(false);
         ignoreButton.setDisable(false);
         ignoreAllButton.setDisable(false);
-        // Enable delete and edit buttons
         deleteTextButton.setDisable(false);
+        addToDictButton.setDisable(false);
+
+        // File-text field and manual edit buttons
+        undoTextEditButton.setDisable(true);
+        saveTextFieldButton.setDisable(true);
         editTextFieldButton.setDisable(false);
         fileTextField.setEditable(false); // Stop the file contents field from being editable
     }
+    
 }
