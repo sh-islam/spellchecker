@@ -42,7 +42,7 @@
 
 /* Suggestions box and correction optons */
 .spellchecker-container {
-    -fx-padding: 20 0 0 50; /* top, right, bottom, left */
+    -fx-padding: 20 50 0 50; /* top, right, bottom, left */
 }
 #suggested-word-list {
     -fx-pref-width: 250px;
@@ -52,7 +52,7 @@
     -fx-padding: 0 0 10 0;
 }
 .correction-container {
-    -fx-padding: 60 0 0 30; /* top, right, bottom, left */
+    -fx-padding: 60 0 0 20; /* top, right, bottom, left */
 }
 #label-correction-options {
     -fx-padding: 0 0 10 0;
