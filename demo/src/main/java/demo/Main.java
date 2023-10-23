@@ -31,6 +31,8 @@ import java.net.URL;
 
 
 public class Main extends Application {
+    private MenuItem openMenuItem;
+
     private Stage primaryStage; // The primary window of the application
     private VBox root; // The root container for UI elements within the scene
     private double initFontSize = 14.0;
@@ -121,13 +123,13 @@ public class Main extends Application {
         fileMenu.getStyleClass().add("file-menu");
     
         // Create "Open" and "Exit" menu items
-        MenuItem openMenuItem = new MenuItem("Open");
+        openMenuItem = new MenuItem("Open");
         openMenuItem.getStyleClass().add("file-menu-open");
         MenuItem exitMenuItem = new MenuItem("Exit");
         exitMenuItem.getStyleClass().add("file-menu-exit");
     
         // Set actions for the "Open" and "Exit" menu items
-        openMenuItem.setOnAction(e -> openFile(primaryStage));
+        openMenuItem.setOnAction(e -> handleBrowseFile(primaryStage));
         exitMenuItem.setOnAction(e -> exitApplication());
     
         // Add menu items to the "File" menu
@@ -161,29 +163,7 @@ public class Main extends Application {
         root.getChildren().add(menuBar);
     }
     
-    private void openFile(Stage primaryStage) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open File");
-        File selectedFile = fileChooser.showOpenDialog(primaryStage);
-
-        if (selectedFile != null) {
-            String filePath = selectedFile.getAbsolutePath();
-
-            if (filePath.toLowerCase().endsWith(".txt")) {
-                // Handle the file open operation, e.g., read the file content and update your UI
-                // Replace this with your actual file open logic
-                filePathField.setText(filePath);
-            } else {
-                // Show an error message for an invalid file type
-                Alert alert = new Alert(AlertType.WARNING);
-                alert.setTitle("Invalid File Type");
-                alert.setHeaderText("Please enter a valid plain-text file.");
-                alert.showAndWait();
-                filePathField.clear();
-            }
-        }
-    }
-
+    // Helper event handler for menu
     private void exitApplication() {
         // Will include save file
         Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -196,6 +176,7 @@ public class Main extends Application {
         });
     }
 
+    // Helper event handler for menu
     private void adjustTextSize(double pixelChange) {
         initFontSize += pixelChange;
         String fontSizeStyle = "-fx-font-size: " + initFontSize + "px;";
@@ -416,8 +397,8 @@ public class Main extends Application {
         // }
 
         // Instead of doing that all the time, just replace the path of a file of your choosing:
-        startSpellCheckButton.setDisable(false);
         filePathField.setText("C:\\Users\\ryati\\Desktop\\testing.txt");
+        startSpellCheckButton.setDisable(false);
     }
 
     // Starts program when start is pressed after a valid file is selected
@@ -426,6 +407,7 @@ public class Main extends Application {
         // Show file contents and spelling options
         filePathField.setDisable(true);
         browseButton.setDisable(true);
+        openMenuItem.setDisable(true);
         startSpellCheckButton.setDisable(true);
         fileContentsContainer.setVisible(true);
         spellCheckerContainer.setVisible(true);
