@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
@@ -35,7 +36,7 @@ public class Main extends Application {
 
     private Stage primaryStage; // The primary window of the application
     private VBox root; // The root container for UI elements within the scene
-    private double initFontSize = 14.0;
+    private double rootFontSize = 14.0; // Init font size
 
     private Button startSpellCheckButton, browseButton;   // For input area items
     private VBox fileContentsContainer;
@@ -43,6 +44,8 @@ public class Main extends Application {
     
     private HBox spellCheckerContainer; // For spell checker items (suggestions, correction options)
     private String selectedSuggWord = "";
+    private String currSpellingError = "i.e. sdkfhskdjhfkdshfkjshfkjdshfkdshfksdfksdhfdksjhfkjdshfkjsdhfkjsdhfsf";
+    private TextField currentErrorField;
     private Button replaceButton, replaceAllButton, ignoreButton, ignoreAllButton, addToDictButton, deleteTextButton;
     ListView<String> suggestListView;
 
@@ -116,7 +119,7 @@ public class Main extends Application {
     private void createMenuBar() {
         // Create a menu bar
         MenuBar menuBar = new MenuBar();
-        menuBar.getStyleClass().add("menubar");
+        menuBar.getStyleClass().add("menu-bar");
     
         // Create a "File" menu
         Menu fileMenu = new Menu("File");
@@ -141,29 +144,37 @@ public class Main extends Application {
     
         // Create "Increase Text Size," "Decrease Text Size," and "Reset Text Size" menu items
         MenuItem increaseTextSizeMenuItem = new MenuItem("Increase Text Size");
-        MenuItem decreaseTextSizeMenuItem = new MenuItem("Decrease Text Size");
         MenuItem resetTextSizeMenuItem = new MenuItem("Reset Text Size");
-    
-        // Set actions for the "Increase Text Size," "Decrease Text Size," and "Reset Text Size" menu items
-        increaseTextSizeMenuItem.setOnAction(e -> adjustTextSize(2.0));
-        decreaseTextSizeMenuItem.setOnAction(e -> adjustTextSize(-2.0));
-        resetTextSizeMenuItem.setOnAction(e -> {
-            initFontSize = 14.0;
-            String fontSizeStyle = "-fx-font-size: " + initFontSize + "px;";
-            root.setStyle(fontSizeStyle);
+
+        // Event handles for these items
+        increaseTextSizeMenuItem.setOnAction(e -> {
+            // Allow an increase up to 18.0 in font size and disable once at 18.0
+            if (rootFontSize < 18.0) {
+                if (rootFontSize == 16.0) {
+                    increaseTextSizeMenuItem.setDisable(true);
+                }
+                adjustTextSize(2.0);
+            } 
         });
         
-    
+        resetTextSizeMenuItem.setOnAction(e -> {
+            rootFontSize = 14.0;
+            String fontSizeStyle = "-fx-font-size: " + rootFontSize + "px;";
+            root.setStyle(fontSizeStyle);
+
+            increaseTextSizeMenuItem.setDisable(false);
+        });
+        
+
         // Add menu items to the "View" menu
-        viewMenu.getItems().addAll(increaseTextSizeMenuItem, decreaseTextSizeMenuItem, resetTextSizeMenuItem);
-    
+        viewMenu.getItems().addAll(increaseTextSizeMenuItem, resetTextSizeMenuItem);
         // Add the "File" and "View" menus to the menu bar
         menuBar.getMenus().addAll(fileMenu, viewMenu);
-    
         root.getChildren().add(menuBar);
     }
     
     // Helper event handler for menu
+    //can make this global so if user closes prematurely this triggers and prompts for saves 
     private void exitApplication() {
         // Will include save file
         Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -178,8 +189,8 @@ public class Main extends Application {
 
     // Helper event handler for menu
     private void adjustTextSize(double pixelChange) {
-        initFontSize += pixelChange;
-        String fontSizeStyle = "-fx-font-size: " + initFontSize + "px;";
+        rootFontSize += pixelChange;
+        String fontSizeStyle = "-fx-font-size: " + rootFontSize + "px;";
         root.setStyle(fontSizeStyle);
     }
 
@@ -226,8 +237,6 @@ public class Main extends Application {
         spellCheckerContainer.setVisible(false);
     
         VBox suggestedWordsContainer = new VBox();
-       
-
         Label suggestedWordsLabel = new Label("Suggested words:");
         suggestedWordsLabel.setId("label-suggested-words");
         suggestListView = new ListView<>();
@@ -250,12 +259,21 @@ public class Main extends Application {
         });
         suggestedWordsContainer.getChildren().addAll(suggestedWordsLabel, suggestListView);
 
-        VBox correctionContainer = new VBox(); // label and buttons
+        VBox correctionContainer = new VBox(); // error word, label for buttons and buttons
         correctionContainer.getStyleClass().add("correction-container");
-        Label correctionLabel = new Label("Correction options:");
+
+        // Displaying spelling error
+        Label errorWordLabel = new Label("Spelling error:");   
+        errorWordLabel.setId("label-spelling-error");
+        currentErrorField = new TextField(currSpellingError);
+        currentErrorField.getStyleClass().add("spelling-error-field");
+        currentErrorField.setEditable(false);
+        ScrollPane errorFieldScrollPane = new ScrollPane(currentErrorField);
+        errorFieldScrollPane.setFitToWidth(true);
+
+        Label correctionLabel = new Label("Correction options:");   
         correctionLabel.setId("label-correction-options");
-        
-        HBox correctionButtonsGroup = new HBox();   //(replace, ignore) buttons
+        HBox correctionButtonsGroup = new HBox();   // (replace, ignore) buttons
         correctionButtonsGroup.getStyleClass().add("correction-button-group");
         
         // "Replace" and "Ignore" button groups
@@ -285,9 +303,9 @@ public class Main extends Application {
 
 
         correctionButtonsGroup.getChildren().addAll(replaceButtonsGroup, ignoreButtonGroup, addDeleteButtonGroup);
-        correctionContainer.getChildren().addAll(correctionLabel, correctionButtonsGroup);
-
-        spellCheckerContainer.getChildren().addAll(suggestedWordsContainer, correctionContainer);
+        
+        correctionContainer.getChildren().addAll(errorWordLabel, currentErrorField, correctionLabel, correctionButtonsGroup);
+        spellCheckerContainer.getChildren().addAll(suggestedWordsContainer, correctionContainer);   // outer container is horizontal, inner containers are veritcal
         root.getChildren().add(spellCheckerContainer);
     }
 
@@ -301,6 +319,7 @@ public class Main extends Application {
         fileContentsContainer.setVisible(false);
     
         fileTextField = new TextArea();
+        fileTextField.getStyleClass().add("file-text-field");
         fileTextField.setMinWidth(300);
         fileTextField.setWrapText(true);
         fileTextField.setEditable(false);
@@ -376,29 +395,29 @@ public class Main extends Application {
 
     // Opens a FileChooser and checks selected file is of valid type
     private void handleBrowseFile(Stage primaryStage) {
-        // FileChooser fileChooser = new FileChooser();
-        // fileChooser.setTitle("Open File");
-        // java.io.File selectedFile = fileChooser.showOpenDialog(primaryStage);
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open File");
+        java.io.File selectedFile = fileChooser.showOpenDialog(primaryStage);
 
-        // if (selectedFile != null) {
-        //     String filePath = selectedFile.getAbsolutePath();
+        if (selectedFile != null) {
+            String filePath = selectedFile.getAbsolutePath();
 
-        //     if (filePath.toLowerCase().endsWith(".txt")) {
-        //         filePathField.setText(filePath);
-        //         // Allow spell check to start after txt file is browsed
-        //         startSpellCheckButton.setDisable(false);    
-        //     } else {
-        //         Alert alert = new Alert(AlertType.WARNING);
-        //         alert.setTitle("Invalid File Type");
-        //         alert.setHeaderText("Please enter a valid plain-text file.");
-        //         alert.showAndWait();
-        //         filePathField.clear();
-        //     }
-        // }
+            if (filePath.toLowerCase().endsWith(".txt")) {
+                filePathField.setText(filePath);
+                // Allow spell check to start after txt file is browsed
+                startSpellCheckButton.setDisable(false);    
+            } else {
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Invalid File Type");
+                alert.setHeaderText("Please enter a valid plain-text file.");
+                alert.showAndWait();
+                filePathField.clear();
+            }
+        }
 
         // Instead of doing that all the time, just replace the path of a file of your choosing:
-        filePathField.setText("C:\\Users\\ryati\\Desktop\\testing.txt");
-        startSpellCheckButton.setDisable(false);
+        // filePathField.setText("C:\\Users\\ryati\\Desktop\\testing.txt");
+        // startSpellCheckButton.setDisable(false);
     }
 
     // Starts program when start is pressed after a valid file is selected
@@ -440,18 +459,19 @@ public class Main extends Application {
 
     }
 
+    // Cam merge into one method handleManualChanges(type = "edit", "save", "undo") or keep seperate for SoC
     private void handleEnableEditing() {
         // Disable the spell-check options
         replaceButton.setDisable(true);
         replaceAllButton.setDisable(true);
         ignoreButton.setDisable(true);
         ignoreAllButton.setDisable(true);
+        deleteTextButton.setDisable(true);
         addToDictButton.setDisable(true);
 
         // File-text field and manual edit buttons
         fileTextField.setEditable(true);
         editTextFieldButton.setDisable(true); 
-        deleteTextButton.setDisable(true);
         saveTextFieldButton.setDisable(false);
         undoTextEditButton.setDisable(false);
     }
@@ -463,8 +483,8 @@ public class Main extends Application {
         replaceButton.setDisable(false);
         replaceAllButton.setDisable(false);
         ignoreButton.setDisable(false);
-        deleteTextButton.setDisable(false);
         ignoreAllButton.setDisable(false);
+        deleteTextButton.setDisable(false);
         addToDictButton.setDisable(false);
 
         // File-text field and manual edit buttons
@@ -487,11 +507,11 @@ public class Main extends Application {
         deleteTextButton.setDisable(false);
         addToDictButton.setDisable(false);
 
-        // File-text field and manual edit buttons
-        undoTextEditButton.setDisable(true);
-        saveTextFieldButton.setDisable(true);
-        editTextFieldButton.setDisable(false);
+        // File-text field and manual edit buttons;
         fileTextField.setEditable(false); // Stop the file contents field from being editable
+        editTextFieldButton.setDisable(false);
+        saveTextFieldButton.setDisable(true);
+        undoTextEditButton.setDisable(true);
     }
     
 }
