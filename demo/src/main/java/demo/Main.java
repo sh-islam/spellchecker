@@ -139,7 +139,7 @@ public class Main extends Application {
     
         // Set actions for the "Open" and "Exit" menu items
         openMenuItem.setOnAction(e -> handleBrowseFile(primaryStage));
-        exitMenuItem.setOnAction(e -> exitApplication());
+        exitMenuItem.setOnAction(e -> handleExitApp());
     
         // Add menu items to the "File" menu
         fileMenu.getItems().addAll(openMenuItem, exitMenuItem);
