@@ -91,6 +91,12 @@ public class Main extends Application {
         Image icon = new Image(getClass().getResourceAsStream("/program_icon.png"));
         primaryStage.getIcons().add(icon);
 
+        // Add an event handler to the window's close button (X button)
+        primaryStage.setOnCloseRequest(event -> {
+            event.consume(); // Consume the event to prevent the window from closing directly
+            handleExitApp(); // Call your exitApplication method
+        });
+
         // Show the window
         primaryStage.show();
     }
@@ -172,21 +178,6 @@ public class Main extends Application {
         menuBar.getMenus().addAll(fileMenu, viewMenu);
         root.getChildren().add(menuBar);
     }
-    
-    // Helper event handler for menu
-    //can make this global so if user closes prematurely this triggers and prompts for saves 
-    private void exitApplication() {
-        // Will include save file
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Exit");
-        alert.setHeaderText("Are you sure you want to exit?");
-        alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                primaryStage.close();
-            }
-        });
-    }
-
     // Helper event handler for menu
     private void adjustTextSize(double pixelChange) {
         rootFontSize += pixelChange;
@@ -418,6 +409,19 @@ public class Main extends Application {
         // Instead of doing that all the time, just replace the path of a file of your choosing:
         // filePathField.setText("C:\\Users\\ryati\\Desktop\\testing.txt");
         // startSpellCheckButton.setDisable(false);
+    }
+
+    // Helper event handler for closing from menu bar or window's close (x) button
+    private void handleExitApp() {
+        // Will include save file
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Exit");
+        alert.setHeaderText("Are you sure you want to exit?");
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                primaryStage.close();
+            }
+        });
     }
 
     // Starts program when start is pressed after a valid file is selected
