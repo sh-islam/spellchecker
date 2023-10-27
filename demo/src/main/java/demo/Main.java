@@ -53,11 +53,6 @@ public class Main extends Application {
     private String fileContents;    // Contains contents of document and displays in fileTextField text area
     private Button editTextFieldButton, saveTextFieldButton, undoTextEditButton;
 
-
-    public static void main(String[] args) {
-        launch(args);
-    }
-
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage; // Assign the primary stage to the class variable
@@ -185,7 +180,7 @@ public class Main extends Application {
         root.setStyle(fontSizeStyle);
     }
 
-
+    
     // Input container items include field text box and buttons
     private void createInputContainer() {
         // Create a VBox to hold the input group and text field
@@ -410,7 +405,7 @@ public class Main extends Application {
         // filePathField.setText("C:\\Users\\ryati\\Desktop\\testing.txt");
         // startSpellCheckButton.setDisable(false);
     }
-
+    
     // Helper event handler for closing from menu bar or window's close (x) button
     private void handleExitApp() {
         // Will include save file
@@ -516,6 +511,11 @@ public class Main extends Application {
         editTextFieldButton.setDisable(false);
         saveTextFieldButton.setDisable(true);
         undoTextEditButton.setDisable(true);
+    }
+
+
+    public static void main(String[] args) {
+        launch(args);
     }
     
 }
