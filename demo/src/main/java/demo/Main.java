@@ -58,7 +58,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage; // Assign the primary stage to the class variable
         //primaryStage.setResizable(false); // Disable window resizing
-        root = new AnchorPane(); // The main container that organizes UI elements vertically (Vbox) 
+        root = new AnchorPane(); // The main container that organizes UI elements by setting to different anchor points 
 
         // **Create display areas here**
         createMenuBar();
@@ -67,6 +67,7 @@ public class Main extends Application {
         createfileContentsContainer(); // Sets up the area to display file contents
         createFooterContainer();    // Sets up footer area including progress, radio-buttons, in future spelling stats
         // Setting tool-tips/hover-text for all buttons
+        // Will modify it to set custom messages like: startSpellCheckButton.setTooltip(new Tooltip("Start the spellchecking process."));
         setTooltipsForButtons(
             startSpellCheckButton, browseButton, 
             replaceButton, replaceAllButton, ignoreButton, ignoreAllButton, addToDictButton, deleteTextButton,
@@ -75,6 +76,9 @@ public class Main extends Application {
         
         // Create a scene
         Scene scene = new Scene(root, 720, 720); // The view containing UI elements
+        primaryStage.setMinWidth(740);  // Prevent from resizing below minimum size (not equal to 720 as above due to styling and OS)
+        primaryStage.setMinHeight(760);
+        
         applyStylesheet("styles.css", scene); 
         
         // Set the scene for the primary stage
