@@ -1,6 +1,6 @@
 /* Common styles for both modes */
 .root {
-    -fx-font-size: 14;  
+    -fx-font-size: 14;
 }
 
 .button {
@@ -44,7 +44,7 @@
 }
 
 #label-suggested-words {
-
+    -fx-padding: 0 0 10 0;
 }
 
 .correction-container {
@@ -62,7 +62,7 @@
 }
 
 #label-correction-options {
-    -fx-padding: 10 0 5 0;
+    -fx-padding: 15 0 5 0;
 }
 
 .correction-button-group {
@@ -86,7 +86,7 @@
 .file-contents-container > * {
 }
 
-.file-text-field .scroll-bar:vertical {
+.file-text-field { 
 }
 
 .manual-correction-button-group {
@@ -101,7 +101,7 @@
 
 /* Footer container and items */
 .footer-container {
-    -fx-padding: 5 5 5 5; /* top, right, bottom, left */
+    -fx-padding: 5 5 7.5 5; /* top, right, bottom, left */
 }
 
 .toggle-lighting-box {
@@ -116,7 +116,7 @@
 /* Styles specific to light mode */
 .light-mode {
     -fx-background-color: #cecece; /* Light gray background */
-    -fx-control-inner-background: #F5F5F5; /* Changes color of text inside too */
+    -fx-control-inner-background: #F5F5F5; /* Text area inner colour; colour of text is automatically managed*/
 }
 
 .light-mode Label, .light-mode RadioButton {
@@ -127,6 +127,12 @@
 
 .light-mode .footer-container {
     -fx-background-color: #a8a8a870; /* Set your desired color for dark mode */
+}
+
+.light-mode .file-text-field .scroll-bar:vertical,
+.light-mode #suggested-word-list .scroll-bar:vertical {
+    -fx-pref-width: 15px;
+    -fx-background-color: #F5F5F5;
 }
 
 
@@ -149,4 +155,21 @@
 
 .dark-mode .footer-container, .dark-mode .menu-bar{
     -fx-background-color: #1a1a1a52;
+}
+
+.dark-mode .file-text-field .scroll-bar:vertical,
+.dark-mode #suggested-word-list .scroll-bar:vertical {
+    -fx-pref-width: 15px;
+    -fx-background-color: #1E1E1E;
+}
+
+.dark-mode .file-text-field .scroll-bar:vertical .thumb,
+.dark-mode #suggested-word-list .scroll-bar:vertical .thumb {
+    -fx-background-color: #2e2e2e;
+    -fx-effect: innershadow(gaussian, #606060, 2, 0.0, 0, 1);
+}
+
+.dark-mode .file-text-field .scroll-bar:vertical .thumb:hover,
+.dark-mode #suggested-word-list .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #555555;
 }
