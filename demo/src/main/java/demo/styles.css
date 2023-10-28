@@ -1,9 +1,6 @@
 /* Common styles for both modes */
 .root {
-    /* Initial font-size--if changed, change value of initFontSize in above adjustTextSize() */
     -fx-font-size: 14;  
-    -fx-min-width: 100px;
-    -fx-padding: 0;
 }
 
 .button {
@@ -25,86 +22,94 @@
     -fx-background-color: #797979;
 }
 
-/* File browser and buttons */
+/* Input container */
 .input-container {
-    -fx-padding: 30 20 10 20; /* top, right, bottom, left */
+    -fx-min-width: 100%;
     -fx-spacing: 10px;
-   
 }
-/* For children of? Sometimes works.. */
+
 .input-container > * {
     -fx-spacing: 10px;
 }
 
-/* Suggestions box and correction optons */
-.spellchecker-container {
-    -fx-padding: 20 50 0 50; /* top, right, bottom, left */
-}
-#suggested-word-list {
-    -fx-pref-width: 250px;
-    -fx-pref-height: 150px;
-}
-#label-suggested-words {
-    -fx-padding: 0 0 10 0;
-}
-.correction-container {
-    -fx-padding: 0 0 0 20; /* top, right, bottom, left */
-}
-#label-spelling-error{
-    -fx-padding: 0 0 10 0;
-}
-.spelling-error-field {
-    -fx-text-fill: red; 
-}
-#label-correction-options {
-    -fx-padding: 15 0 10 0;
-}
-.correction-button-group {
-    -fx-spacing: 10px;
-}
-.replace-button-group{
-    -fx-spacing: 10px;
-}
-.ignore-button-group{
-    -fx-spacing: 10px;
-}
-.add-delete-button-group{
-    -fx-spacing: 10px;
-}
 
-/* File contents and manual correction buttons*/
-#label-file-contents {
-    -fx-padding: 10 0 0 0;
-}
-.file-contents-container {
-    -fx-padding: 35 20 10 20; /* top, right, bottom, left */
-    -fx-spacing: 10px;
-}
-.file-contents-container > * {
-    -fx-spacing: 10px;
-}
-.file-text-field .scroll-bar:vertical{
+/* Suggestions box and correction options (replace, etc. buttons) */
+.spellchecker-container {
     
 }
 
-.edit-button-container {
+#suggested-word-list {
+    -fx-pref-width: 200px;
+    -fx-pref-height: 150px;
+}
+
+#label-suggested-words {
+
+}
+
+.correction-container {
+    
+}
+
+#label-spelling-error {
+    -fx-padding: 0 0 10 0;
+}
+
+.spelling-error-field {
+    -fx-text-fill: red; 
+    -fx-min-width: 200px;
+    -fx-max-width: 200px;
+}
+
+#label-correction-options {
+    -fx-padding: 10 0 5 0;
+}
+
+.correction-button-group {
+    -fx-spacing: 15px
+}
+
+.replace-button-group, .ignore-button-group, .add-delete-button-group{
+    -fx-spacing: 10px;
+}
+
+
+/* File contents and manual correction buttons (edit, save, undo) */
+#label-file-contents {
+    -fx-padding: 0 0 10 0;
+}
+
+.file-contents-container {
+    -fx-padding: 20 0 0 0;
+}
+
+.file-contents-container > * {
+}
+
+.file-text-field .scroll-bar:vertical {
+}
+
+.manual-correction-button-group {
     -fx-padding: 10 0 10 0; /* top, right, bottom, left */
     -fx-spacing: 15px;
 }
+
 #label-manual-correction-buttons {
     -fx-padding: 2.5 0 0 0;
 }
 
-/* Footer items */
+
+/* Footer container and items */
 .footer-container {
-    -fx-padding: 10 10 10 20 /* top, right, bottom, left */
+    -fx-padding: 5 5 5 5; /* top, right, bottom, left */
 }
-.toggle-group-box {
-    -fx-padding: 0 0 0 480;
-    -fx-spacing: 15px;
+
+.toggle-lighting-box {
+    -fx-spacing: 10px
 }
+
 .footer-container Label, .footer-container RadioButton {
-    -fx-font-size: 11px;
+    -fx-font-size: 12px;
 }
 
 
@@ -145,4 +150,3 @@
 .dark-mode .footer-container, .dark-mode .menu-bar{
     -fx-background-color: #1a1a1a52;
 }
-

@@ -16,7 +16,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
-import javafx.scene.layout.VBox;  
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.scene.control.ListView;
@@ -32,17 +33,17 @@ import java.net.URL;
 
 
 public class Main extends Application {
-    private MenuItem openMenuItem;
-
     private Stage primaryStage; // The primary window of the application
-    private VBox root; // The root container for UI elements within the scene
+    private AnchorPane root; // The root container for UI elements within the scene
     private double rootFontSize = 14.0; // Init font size
+
+    private MenuItem openMenuItem;
 
     private Button startSpellCheckButton, browseButton;   // For input area items
     private VBox fileContentsContainer;
     private TextField filePathField;
     
-    private HBox spellCheckerContainer; // For spell checker items (suggestions, correction options)
+    private AnchorPane spellCheckerContainer; // For spell checker items (suggestions, correction options)
     private String selectedSuggWord = "";
     private String currSpellingError = "i.e. sdkfhskdjhfkdshfkjshfkjdshfkdshfksdfksdhfdksjhfkjdshfkjsdhfkjsdhfsf";
     private TextField currentErrorField;
@@ -56,8 +57,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage; // Assign the primary stage to the class variable
-        primaryStage.setResizable(false); // Disable window resizing
-        root = new VBox(); // The main container that organizes UI elements vertically (Vbox) 
+        //primaryStage.setResizable(false); // Disable window resizing
+        root = new AnchorPane(); // The main container that organizes UI elements vertically (Vbox) 
 
         // **Create display areas here**
         createMenuBar();
@@ -96,6 +97,7 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+    // Helper to start, applies stylesheet
     private void applyStylesheet(String stylesheet, Scene scene) {
         if (scene != null) {
             URL resource = getClass().getResource(stylesheet);
@@ -115,6 +117,7 @@ public class Main extends Application {
             button.setTooltip(tooltip);
         }
     }
+
 
     // Menubar
     private void createMenuBar() {
@@ -146,11 +149,13 @@ public class Main extends Application {
         // Create "Increase Text Size," "Decrease Text Size," and "Reset Text Size" menu items
         MenuItem increaseTextSizeMenuItem = new MenuItem("Increase Text Size");
         MenuItem resetTextSizeMenuItem = new MenuItem("Reset Text Size");
+        resetTextSizeMenuItem.setDisable(true);
 
         // Event handles for these items
         increaseTextSizeMenuItem.setOnAction(e -> {
             // Allow an increase up to 18.0 in font size and disable once at 18.0
             if (rootFontSize < 18.0) {
+                resetTextSizeMenuItem.setDisable(false);
                 if (rootFontSize == 16.0) {
                     increaseTextSizeMenuItem.setDisable(true);
                 }
@@ -162,8 +167,8 @@ public class Main extends Application {
             rootFontSize = 14.0;
             String fontSizeStyle = "-fx-font-size: " + rootFontSize + "px;";
             root.setStyle(fontSizeStyle);
-
             increaseTextSizeMenuItem.setDisable(false);
+            resetTextSizeMenuItem.setDisable(true);
         });
         
 
@@ -171,8 +176,13 @@ public class Main extends Application {
         viewMenu.getItems().addAll(increaseTextSizeMenuItem, resetTextSizeMenuItem);
         // Add the "File" and "View" menus to the menu bar
         menuBar.getMenus().addAll(fileMenu, viewMenu);
-        root.getChildren().add(menuBar);
+        // Anchoring edges of menuBar to allow accessible viewing
+        AnchorPane.setTopAnchor(menuBar, 0.0);  // Setting position of menubar at the top  
+        AnchorPane.setLeftAnchor(menuBar, 0.0);
+        AnchorPane.setRightAnchor(menuBar, 0.0);
+        root.getChildren().add(menuBar);    // Adding the menubar to the root container
     }
+
     // Helper event handler for menu
     private void adjustTextSize(double pixelChange) {
         rootFontSize += pixelChange;
@@ -180,8 +190,7 @@ public class Main extends Application {
         root.setStyle(fontSizeStyle);
     }
 
-    
-    // Input container items include field text box and buttons
+    // Input container items include field text box and buttons (browse ,start)
     private void createInputContainer() {
         // Create a VBox to hold the input group and text field
         Label titleLabel = new Label("File path:"); 
@@ -195,7 +204,7 @@ public class Main extends Application {
         filePathField = new TextField();
         filePathField.setEditable(false);
         filePathField.setDisable(true);
-        filePathField.setPrefWidth(720); // Set the width to match the window's width (can be added in css too)
+
 
         // Create a button to browse for a file
         browseButton = new Button("Browse");
@@ -212,14 +221,17 @@ public class Main extends Application {
 
         // Add the button group and text field to the main VBox
         inputContainer.getChildren().addAll(titleLabel, filePathField, buttonGroup);
+        AnchorPane.setTopAnchor(inputContainer, 40.0);  // Setting position of inputContainer
+        AnchorPane.setLeftAnchor(inputContainer, 20.0);
+        AnchorPane.setRightAnchor(inputContainer, 20.0);
         // Add the main VBox to the root
         root.getChildren().addAll(inputContainer);
     }
 
-    // Suggestion correction button options (replace, ignore) in here
-    private void createSpellCheckerContainer(){
-        spellCheckerContainer = new HBox();
-        spellCheckerContainer.getStyleClass().add("spellchecker-container"); 
+    // Spell checker container, including spelling suggestions and non manual corrections (replace, ignore, delete, add)
+    private void createSpellCheckerContainer() {
+        spellCheckerContainer = new AnchorPane();
+        spellCheckerContainer.getStyleClass().add("spellchecker-container");
         spellCheckerContainer.setVisible(false);
     
         VBox suggestedWordsContainer = new VBox();
@@ -228,7 +240,7 @@ public class Main extends Application {
         suggestListView = new ListView<>();
         suggestListView.setId("suggested-word-list");
     
-        // Example of suggested wordlist
+        // Example of suggested word list
         // Create an ObservableList to hold the suggested words
         ObservableList<String> suggestedWords = FXCollections.observableArrayList();
         suggestListView.setItems(suggestedWords);
@@ -244,24 +256,24 @@ public class Main extends Application {
             }
         });
         suggestedWordsContainer.getChildren().addAll(suggestedWordsLabel, suggestListView);
-
+    
         VBox correctionContainer = new VBox(); // error word, label for buttons and buttons
         correctionContainer.getStyleClass().add("correction-container");
-
+    
         // Displaying spelling error
-        Label errorWordLabel = new Label("Spelling error:");   
+        Label errorWordLabel = new Label("Spelling error:");
         errorWordLabel.setId("label-spelling-error");
         currentErrorField = new TextField(currSpellingError);
         currentErrorField.getStyleClass().add("spelling-error-field");
         currentErrorField.setEditable(false);
         ScrollPane errorFieldScrollPane = new ScrollPane(currentErrorField);
         errorFieldScrollPane.setFitToWidth(true);
-
-        Label correctionLabel = new Label("Correction options:");   
+    
+        Label correctionLabel = new Label("Correction options:");
         correctionLabel.setId("label-correction-options");
-        HBox correctionButtonsGroup = new HBox();   // (replace, ignore) buttons
+        HBox correctionButtonsGroup = new HBox(); // (replace, ignore) buttons
         correctionButtonsGroup.getStyleClass().add("correction-button-group");
-        
+    
         // "Replace" and "Ignore" button groups
         VBox replaceButtonsGroup = new VBox();
         replaceButtonsGroup.getStyleClass().add("replace-button-group");
@@ -270,7 +282,7 @@ public class Main extends Application {
         replaceAllButton = new Button("Replace All");
         replaceAllButton.setOnAction(e -> handleReplaceAll());
         replaceButtonsGroup.getChildren().addAll(replaceButton, replaceAllButton);
-
+    
         VBox ignoreButtonGroup = new VBox();
         ignoreButtonGroup.getStyleClass().add("ignore-button-group");
         ignoreButton = new Button("Ignore");
@@ -278,7 +290,7 @@ public class Main extends Application {
         ignoreAllButton = new Button("Ignore All");
         ignoreAllButton.setOnAction(e -> handleIgnoreAll());
         ignoreButtonGroup.getChildren().addAll(ignoreButton, ignoreAllButton);
-
+    
         VBox addDeleteButtonGroup = new VBox();
         addDeleteButtonGroup.getStyleClass().add("add-delete-button-group");
         deleteTextButton = new Button("Delete");
@@ -286,15 +298,27 @@ public class Main extends Application {
         addToDictButton = new Button("Add to Dictionary");
         addToDictButton.setOnAction(e -> handleAddToDict());
         addDeleteButtonGroup.getChildren().addAll(deleteTextButton, addToDictButton);
-
-
+    
         correctionButtonsGroup.getChildren().addAll(replaceButtonsGroup, ignoreButtonGroup, addDeleteButtonGroup);
-        
         correctionContainer.getChildren().addAll(errorWordLabel, currentErrorField, correctionLabel, correctionButtonsGroup);
-        spellCheckerContainer.getChildren().addAll(suggestedWordsContainer, correctionContainer);   // outer container is horizontal, inner containers are veritcal
+        spellCheckerContainer.getChildren().addAll(suggestedWordsContainer, correctionContainer);
+
+        // Setting positions of the correction and suggested words to around the center
+        spellCheckerContainer.widthProperty().addListener((obs, oldVal, newVal) -> {
+            double midPoint = spellCheckerContainer.getWidth() / 2;
+            AnchorPane.setRightAnchor(correctionContainer, midPoint - 70);
+            AnchorPane.setLeftAnchor(suggestedWordsContainer, midPoint + 100);
+        });
+        // Setting position for spell checker container 
+        root.heightProperty().addListener((obs, oldVal, newVal) -> {
+            AnchorPane.setTopAnchor(spellCheckerContainer, root.getHeight() / 4);
+            AnchorPane.setLeftAnchor(spellCheckerContainer, 10.0);
+            AnchorPane.setRightAnchor(spellCheckerContainer, 10.0);
+        });
+
         root.getChildren().add(spellCheckerContainer);
     }
-
+    
     // Manual correction button options in here
     private void createfileContentsContainer() {
         Label titleLabel = new Label("File contents:");
@@ -311,7 +335,7 @@ public class Main extends Application {
         fileTextField.setEditable(false);
     
         HBox buttonGroup = new HBox(); // Grouping manual edit buttons
-        buttonGroup.getStyleClass().add("edit-button-container");
+        buttonGroup.getStyleClass().add("manual-correction-button-group");
         Label buttonGroupLabel = new Label ("Manual correction options:");
         buttonGroupLabel.setId("label-manual-correction-buttons");
     
@@ -328,31 +352,36 @@ public class Main extends Application {
         saveTextFieldButton.setOnAction(e -> handleSaveEditChanges());
     
         buttonGroup.getChildren().addAll(buttonGroupLabel, editTextFieldButton, saveTextFieldButton, undoTextEditButton);
-    
-        // Add the label and children to the fileContentsContainer
         fileContentsContainer.getChildren().addAll(titleLabel, fileTextField, buttonGroup);
-    
+
+        root.heightProperty().addListener((obs, oldVal, newVal) -> {
+            AnchorPane.setTopAnchor(fileContentsContainer, (root.getHeight() / 2));
+            AnchorPane.setLeftAnchor(fileContentsContainer, 20.0);
+            AnchorPane.setRightAnchor(fileContentsContainer, 20.0);
+        });
+
         root.getChildren().add(fileContentsContainer);
     }
     
     // Footer items include progress and radio-buttons. Will add error stats here. 
     private void createFooterContainer() {
-        HBox footerContainer = new HBox();
+        AnchorPane footerContainer = new AnchorPane();
         footerContainer.getStyleClass().add("footer-container");
+    
         Label progressLabel = new Label("Progress:");
         progressLabel.setId("label-progress");
-
+    
         // Create a ToggleGroup for the radio buttons
         ToggleGroup styleToggleGroup = new ToggleGroup();
-
+    
         RadioButton lightModeButton = new RadioButton("Light Mode");
         lightModeButton.setToggleGroup(styleToggleGroup);
-        
+    
         RadioButton darkModeButton = new RadioButton("Dark Mode");
         darkModeButton.setToggleGroup(styleToggleGroup);
         darkModeButton.setSelected(true); // Dark mode is default for now
         root.getStyleClass().add("dark-mode");
-
+    
         // Listener to toggle between styles
         styleToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == darkModeButton) {
@@ -365,19 +394,29 @@ public class Main extends Application {
                 root.getStyleClass().add("light-mode");
             }
         });
-        
-
+    
         HBox toggleGroupBox = new HBox();
-        toggleGroupBox.getStyleClass().add("toggle-group-box");
-
+        toggleGroupBox.getStyleClass().add("toggle-lighting-box");
+    
         toggleGroupBox.getChildren().addAll(lightModeButton, darkModeButton);
+    
+        // Set constraints for the "Progress" label and toggleGroupBox
+        AnchorPane.setLeftAnchor(progressLabel, 5.0);
+        AnchorPane.setTopAnchor(progressLabel, 5.0);
+        AnchorPane.setRightAnchor(toggleGroupBox, 5.0);
+        AnchorPane.setTopAnchor(toggleGroupBox, 5.0);
+    
         footerContainer.getChildren().addAll(progressLabel, toggleGroupBox);
-
+    
+        AnchorPane.setBottomAnchor(footerContainer, 0.0);
+        AnchorPane.setLeftAnchor(footerContainer, 0.0);
+        AnchorPane.setRightAnchor(footerContainer, 0.0);
+    
         root.getChildren().add(footerContainer);
-}
+    }
+    
 
-
-    // Event handler functions
+    // **Event handler functions**
 
     // Opens a FileChooser and checks selected file is of valid type
     private void handleBrowseFile(Stage primaryStage) {
@@ -401,8 +440,8 @@ public class Main extends Application {
             }
         }
 
-        // Instead of doing that all the time, just replace the path of a file of your choosing:
-        // filePathField.setText("C:\\Users\\ryati\\Desktop\\testing.txt");
+        // // Instead of doing that all the time, just replace the path of a file of your choosing:
+        // filePathField.setText("C:\\Users\\ryati\\Desktop\\Cheap Vacation Ideas.txt");
         // startSpellCheckButton.setDisable(false);
     }
     
